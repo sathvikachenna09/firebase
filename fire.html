@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Firebase CRUD operations</title>
+<style>
+label {
+display: inline-block;
+width: 80px;
+}
+</style>
+</head>
+<body>
+<label for="rollno">RollNo:</label>
+<input type="text" id="rollno" /><br /><br />
+<label for="name">Name:</label>
+<input type="text" id="name" /><br /><br />
+<label for="branch">Branch:</label>
+<input type="text" id="branch" /><br /><br />
+<label for="section">Section:</label>
+<input type="text" id="section" /><br /><br />
+<hr />
+<button id="select">SELECT</button>
+<button id="insert">INSERT</button>
+<button id="update">UPDATE</button>
+<button id="delete">DELETE</button>
+<button id="clear">CLEAR</button>
+<script type="module">
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDemiYv0zzLsuCG7lBTiab9IQPWNsBSu4A",
+  authDomain: "studentdatabase-8d9e7.firebaseapp.com",
+  databaseURL: "https://studentdatabase-8d9e7-default-rtdb.firebaseio.com",
+  projectId: "studentdatabase-8d9e7",
+  storageBucket: "studentdatabase-8d9e7.appspot.com",
+  messagingSenderId: "743848252308",
+  appId: "1:743848252308:web:9d907bf9ff5510e07d7581",
+  measurementId: "G-ZPZH1CCLLM"
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+import {
+set,
+ref,
+get,
+getDatabase,
+child,
+update,
+remove,
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+const db = getDatabase();
+const dbRef = ref(db);
+// References
+var nameBox = document.getElementById("name");
+var rollBox = document.getElementById("rollno");
+var branchBox = document.getElementById("branch");
+var secBox = document.getElementById("section");
+var selBtn = document.getElementById("select");
+var insBtn = document.getElementById("insert");
+var updBtn = document.getElementById("update");
+var delBtn = document.getElementById("delete");
+var clrBtn = document.getElementById("clear");
+// Insert operation
+function insertData() {
+set(ref(db, "TheStudents/" + rollBox.value), {
+NameOfStudent: nameBox.value,
+RollNo: rollBox.value,
+Branch: branchBox.value,
+Section: secBox.value,
+})
+.then(() => alert("Data inserted Successfully"))
+.catch((err) => alert("Unsuccessful, error" + err));
+}
+// Select operation
+function selectData() {
+get(child(dbRef, "TheStudents/" + rollBox.value)).then((snapshot) => {
+if (snapshot.exists()) {
+nameBox.value = snapshot.val().NameOfStudent;
+branchBox.value = snapshot.val().RollNo;
+secBox.value = snapshot.val().Section;
+} else {
+alert("No data found");
+}
+});
+}
+// Update operation
+function updateData() {
+update(ref(db, "TheStudents/" + rollBox.value), {
+NameOfStudent: nameBox.value,
+RollNo: rollBox.value,
+Branch: branchBox.value,
+Section: secBox.value,
+})
+.then(() => alert("Data updated successfully"))
+.catch((err) => alert("Unsuccessful, error" + err));
+}
+// Delete operation
+function deleteData() {
+remove(ref(db, "TheStudents/" + rollBox.value))
+.then(() => alert("Data deleted successfully"))
+.catch((err) => alert("Unsuccessful, error" + err));
+}
+// Clear function
+function clearData() {
+(nameBox.value = ""), (rollBox.value = "");
+(branchBox.value = ""), (secBox.value = "");
+}
+insBtn.addEventListener("click", insertData);
+selBtn.addEventListener("click", selectData);
+updBtn.addEventListener("click", updateData);
+delBtn.addEventListener("click", deleteData);
+clrBtn.addEventListener("click", clearData);
+</script>
+</body>
+</html>
